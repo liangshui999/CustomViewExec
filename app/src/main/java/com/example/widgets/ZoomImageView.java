@@ -6,6 +6,7 @@ import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
@@ -55,6 +56,11 @@ public class ZoomImageView extends ImageView implements ViewTreeObserver.OnGloba
     private ScaleGestureDetector mScaleGestureDetector;
 
     /**
+     * 主要是用于监听双击手势
+     */
+    private GestureDetector mGestureDetector;
+
+    /**
      * 上一次触摸点的x坐标
      */
     private float mLastX;
@@ -78,6 +84,16 @@ public class ZoomImageView extends ImageView implements ViewTreeObserver.OnGloba
      * 变化后的图片所在的区域
      */
     private RectF mConvertedRectF;
+
+    /**
+     * 是否正在缩放
+     */
+    private boolean mIsScaling = false;
+
+    /**
+     * 双击的次数
+     */
+    private int mDoubleTapCount = 0;
 
     /**
      * 最大容许放大的倍数,相对于最原始的图
@@ -110,13 +126,43 @@ public class ZoomImageView extends ImageView implements ViewTreeObserver.OnGloba
         super.setScaleType(ScaleType.MATRIX);
         mZoomMatrix = new Matrix();
         mMatrixValuesArr = new float[9];
-        mScaleGestureDetector = new ScaleGestureDetector(getContext(), this);
-        this.setOnTouchListener(this);
         mOrignalRectF = new RectF();
         mConvertedRectF = new RectF();
-        Log.d(TAG, "mWidth = " + mWidth + "......." + "mHeight = " + mHeight);
+        mScaleGestureDetector = new ScaleGestureDetector(getContext(), this);
+        this.setOnTouchListener(this);
+        initGestureDetector();
+
     }
 
+    /**
+     * 初始化手势监听器，主要用于监听双击手势
+     */
+    private void initGestureDetector() {
+        mGestureDetector = new GestureDetector(getContext(), new GestureDetector.SimpleOnGestureListener(){
+            @Override
+            public boolean onDoubleTap(MotionEvent e) {
+                Log.d(TAG, "onDoubleTap........");
+                if(mIsScaling){
+                    Log.d(TAG, "当前正在缩放中......");
+                    return false;
+                }
+                mDoubleTapCount++;
+                if(mDoubleTapCount % 3 == 0){
+                    postDelayed(new AutoScaleRunnable(e.getX(), e.getY(), getCurrentScale() / 4), 20);
+                }else{
+                    postDelayed(new AutoScaleRunnable(e.getX(), e.getY(), getCurrentScale() * 2), 20);
+                }
+                return super.onDoubleTap(e);
+            }
+
+            @Override
+            public boolean onDoubleTapEvent(MotionEvent e) {
+                Log.d(TAG, "onDoubleTapEvent......");
+
+                return super.onDoubleTapEvent(e);
+            }
+        });
+    }
 
 
     /************************************************************************************/
@@ -194,6 +240,7 @@ public class ZoomImageView extends ImageView implements ViewTreeObserver.OnGloba
     @Override
     public boolean onTouch(View v, MotionEvent event) {
         mScaleGestureDetector.onTouchEvent(event);
+        mGestureDetector.onTouchEvent(event);
         return false;
     }
 
@@ -328,6 +375,82 @@ public class ZoomImageView extends ImageView implements ViewTreeObserver.OnGloba
     private float getCurrentScale(){
         mZoomMatrix.getValues(mMatrixValuesArr);
         return mMatrixValuesArr[Matrix.MSCALE_X];
+    }
+
+
+    /**
+     * 自动缩放的Runnable
+     */
+    class AutoScaleRunnable implements Runnable{
+
+        /**
+         * 缩放中心点的x坐标
+         */
+        private float mX;
+
+        /**
+         * 缩放中心点的y坐标
+         */
+        private float mY;
+
+        /**
+         * 目标缩放比例
+         */
+        private float mTargetScale;
+
+
+        /**
+         * 每一次在上一次基准上面放大的倍数
+         */
+        private float ZOOM_BASE = 1.07f;
+
+        /**
+         * 每一次在上一次基准上面缩小的倍数
+         */
+        private float NARROW_BASE = 0.93f;
+
+        /**
+         * 每一次在上一次基准上面放大或者缩小的倍数
+         */
+        private float mZoomBase = 1.0f;
+
+        public AutoScaleRunnable(float mX, float mY, float mTargetScale) {
+            this.mX = mX;
+            this.mY = mY;
+            this.mTargetScale = mTargetScale;
+            float currentScale = getCurrentScale();
+            if(mTargetScale > currentScale){
+                mZoomBase = ZOOM_BASE;
+            }else if(mTargetScale < currentScale){
+                mZoomBase = NARROW_BASE;
+            }
+        }
+
+        @Override
+        public void run() {
+            float currentScale = getCurrentScale();//获取当前的缩放比例
+            if(currentScale == mTargetScale){ //说明已经完成了，不用再缩放了
+                mIsScaling = false;
+                Log.d(TAG, "缩放已经完成了");
+            }else{
+                if(mZoomBase == ZOOM_BASE){ //说明当前是放大模式
+                    if(currentScale * mZoomBase > mTargetScale){ //说明超标了
+                        mZoomBase = mTargetScale / currentScale;
+                    }
+                }else if(mZoomBase == NARROW_BASE){ //说明当前是缩小模式
+                    if(currentScale * mZoomBase < mTargetScale){ //说明超标了
+                        mZoomBase = mTargetScale / currentScale;
+                    }
+                }
+                mZoomMatrix.postScale(mZoomBase, mZoomBase, mX, mY);
+                setImageMatrix(mZoomMatrix);
+                postDelayed(this, 20);
+                mIsScaling = true;
+            }
+
+
+
+        }
     }
 
 }
