@@ -40,7 +40,7 @@ public class ViewDragHelperTestView extends LinearLayout {
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        mImgOne = (ImageView) findViewById(R.id.img_one);
+        //mImgOne = (ImageView) findViewById(R.id.img_one);
     }
 
     private void init() {
