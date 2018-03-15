@@ -1,5 +1,6 @@
-package com.example.customviewexec;
+package com.example.activity;
 
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -23,6 +24,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         getSupportActionBar().hide();
         setContentView(R.layout.activity_main);
         init();
+
     }
 
     private void init() {
@@ -52,6 +54,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         switch (v.getId()){
+
         }
+
     }
 }

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:background="@color/colorPrimary">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="260dp"
+            android:background="@color/colorAccent"
+            android:text="张三"
+            android:textColor="#ffffff"
+            android:paddingTop="200dp"
+            android:paddingRight="100dp"
+            android:gravity="right"/>
+         <ImageView
+             android:layout_width="80dp"
+             android:layout_height="80dp"
+             android:background="@mipmap/xj"
+             android:layout_alignParentBottom="true"
+             android:layout_alignParentRight="true"/>
+
+    </RelativeLayout>
+
+</LinearLayout>

@@ -9,7 +9,7 @@ import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 
-import com.example.customviewexec.R;
+import com.example.activity.R;
 
 /**
  * 创建日期：2017-12-06 on 11:18

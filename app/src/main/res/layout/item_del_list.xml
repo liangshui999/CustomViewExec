@@ -15,7 +15,7 @@
         android:background="@color/colorAccent"
         />
 
-    <!--设置宽度是一个很核心的部分，不设置宽度是无效的-->
+    <!--明确设置宽度很重要，不设置宽度是无效的-->
     <Button
         android:id="@+id/btn_delete"
         android:layout_width="150dp"
@@ -23,5 +23,4 @@
         android:text="删除"
         android:background="@color/colorPrimary"
         />
-
 </LinearLayout>

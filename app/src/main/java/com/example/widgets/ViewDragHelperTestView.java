@@ -9,8 +9,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import com.example.customviewexec.R;
-
 /**
  * 创建日期：2017-12-11 on 17:10
  * 作者：ls
