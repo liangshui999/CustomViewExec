@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.example.widgets.swipeLoad.SwipeLoadLayout
+        android:id="@+id/swipe_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:background="@color/colorAccent">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:tag="tag_refresh"
+                android:layout_alignParentBottom="true"
+                android:gravity="center"/>
+        </RelativeLayout>
+
+        <ListView
+            android:id="@+id/list_swipe"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/green">
+        </ListView>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:background="@color/colorPrimary">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:tag="tag_load"
+                android:layout_alignParentTop="true"
+                android:gravity="center"/>
+        </RelativeLayout>
+
+    </com.example.widgets.swipeLoad.SwipeLoadLayout>
+
+</LinearLayout>
